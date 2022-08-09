@@ -51,7 +51,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
   test "should return list of distinct books" do
     get search_books_path({q: 'Terry'}), headers:{authorization: @token}, as: :json
     json = JSON.parse(response.body)
-    #assert_equal 2,
+    assert_equal 3, json.size, 'Endpoint returned wrong number of books'
   end
 
 end

@@ -5,6 +5,16 @@ the_colour_of_magic:
   hard_copies_count: 3
   author: terry_pratchett
 
+mort:
+  title: Mort
+  hard_copies_count: 5
+  author: terry_pratchett
+
+terry_pratchett_autobiography:
+  title: Terry Pratchett Autobiography
+  hard_copies_count: 2
+  author: terry_pratchett
+
 two:
   title: MyString
   hard_copies_count: 0
