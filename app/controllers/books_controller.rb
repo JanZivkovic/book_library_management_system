@@ -1,4 +1,6 @@
 class BooksController < ApplicationController
+  before_action :authenticate_request, except: %i[ index show search]
+  before_action :check_user_permissions, only: %i[ create update destroy ]
   before_action :set_book, only: %i[ show update destroy ]
 
   # GET /books
@@ -43,6 +45,7 @@ class BooksController < ApplicationController
       'books.title like ? or authors.name like ?',
       '%' + Book.sanitize_sql_like(params[:q]) + '%',
       '%' + Book.sanitize_sql_like(params[:q]) + '%').distinct
+
     render json: @books
   end
 
@@ -55,5 +58,11 @@ class BooksController < ApplicationController
     # Only allow a list of trusted parameters through.
     def book_params
       params.require(:book).permit(:title, :hard_copies_count, :author_id)
+    end
+
+    def check_user_permissions
+      if @current_user.role.name != 'LIBRARIAN'
+        render json: { error: 'forbidden' }, status: :forbidden
+      end
     end
 end
