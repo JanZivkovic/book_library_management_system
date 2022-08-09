@@ -86,10 +86,16 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
   end
 
-  test "should return list of distinct books" do
+  test "search for books with query that should return list of distinct books" do
     get search_books_path({q: 'Terry'}), headers:{authorization: @token_member}, as: :json
     json = JSON.parse(response.body)
     assert_equal 3, json.size, 'Endpoint returned wrong number of books'
+  end
+
+  test "search for books with query that should return enpty list" do
+    get search_books_path({q: 'TerryDeri'}), headers:{authorization: @token_member}, as: :json
+    json = JSON.parse(response.body)
+    assert_equal 0, json.size, 'List of returned books should be empty'
   end
 
 end
