@@ -20,7 +20,7 @@ class UsersController < ApplicationController
       render json: @user, status: :created
     else
       render json: { errors: @user.errors.full_messages },
-             status: unprocessable_entity
+             status: :unprocessable_entity
     end
   end
 
@@ -28,7 +28,7 @@ class UsersController < ApplicationController
   def update
     unless @user.update(user_params)
       render json: { errors: @user.errors.full_messages },
-             status: unprocessable_entity
+             status: :unprocessable_entity
     end
   end
 
@@ -40,7 +40,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.permit(:username, :email, :password)
+    params.permit(:username, :email, :password, :role_id)
   end
 
   def set_user
