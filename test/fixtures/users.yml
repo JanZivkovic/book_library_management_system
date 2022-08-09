@@ -4,12 +4,12 @@ one:
   name: Petar Petrović
   username: ppetrovic
   email: p.petrovic@gmail.com
-  password_digest:
+  password_digest: $2a$12$s1tMHd7ST6HbXF3XpkQn6epmsi3ltmzyxpTdW2so96/KUqtPT2.Ki # password: harD2gue55
   role: member
 
 two:
   name: Petra Stijena
   username: pstijena
   email: p.stijena@rocks.com
-  password_digest:
+  password_digest: $2a$12$IR9WfTDnVJtIv4u3pIexOu6Cp31Jc6pEsgsD15ffbteT8D0aqBLGe # password: riirgjt45893
   role: librarian
