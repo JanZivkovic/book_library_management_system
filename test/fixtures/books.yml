@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  title: MyString
-  hard_copies_count: MyString
-  author: one
+the_colour_of_magic:
+  title: The Colour of Magic
+  hard_copies_count: 3
+  author: terry_pratchett
 
 two:
   title: MyString
-  hard_copies_count: MyString
+  hard_copies_count: 0
   author: two
