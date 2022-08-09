@@ -6,14 +6,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   # end
 
   test "can_create_user" do
-    post '/users',
+    post users,
          params: {name: 'Borko Perić', username: 'bperic', email: 'pb@ker.hr', password: 'harD2gue55', role_id: roles(:member).id}
     assert_response :success
   end
 
-  test "can_login_user" do
-    post '/users',
-         params: {name: 'Borko Perić', username: 'bperic', email: 'pb@ker.hr', password: 'harD2gue55', role_id: roles(:member).id}
-    assert_response :success
-  end
 end

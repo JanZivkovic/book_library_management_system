@@ -9,3 +9,8 @@ two:
   title: MyString
   hard_copies_count: 0
   author: two
+
+has_not_been_loaned:
+  title: Book no one wants to read
+  hard_copies_count: 4
+  author: two

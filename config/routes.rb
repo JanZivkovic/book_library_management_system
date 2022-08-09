@@ -7,7 +7,8 @@ Rails.application.routes.draw do
   post 'auth/login', to: 'authentication#login'
 
   resources :users , only: [:create]
-  resources :books
-
+  resources :books do
+    get 'search', to: 'books#search', on: :collection
+  end
 
 end

@@ -39,9 +39,11 @@ class BooksController < ApplicationController
   end
 
   def search
-    @books = Book.join(:author).where(
-      "book.title like '%:search_text%' or author.name like '%:search_text%'",
-      sanitize_sql_like(params[q])).distinct
+    @books = Book.joins(:author).where(
+      'books.title like ? or authors.name like ?',
+      '%' + Book.sanitize_sql_like(params[:q]) + '%',
+      '%' + Book.sanitize_sql_like(params[:q]) + '%').distinct
+    render json: @books
   end
 
   private
@@ -52,6 +54,6 @@ class BooksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def book_params
-      params.fetch(:book, {})
+      params.require(:book).permit(:title, :hard_copies_count, :author_id)
     end
 end
