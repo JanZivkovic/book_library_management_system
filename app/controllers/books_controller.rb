@@ -37,7 +37,11 @@ class BooksController < ApplicationController
 
   # DELETE /books/1
   def destroy
-    @book.destroy
+    begin
+      @book.destroy
+    rescue ActiveRecord::InvalidForeignKey => e
+      render json: { error: e.full_message }, status: :conflict
+    end
   end
 
   def search

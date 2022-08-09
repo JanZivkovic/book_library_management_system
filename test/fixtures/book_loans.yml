@@ -9,5 +9,5 @@ one:
 two:
   start_date: 2022-08-08
   end_date: 2022-08-08
-  book: two
+  book: has_been_loaned
   user: two

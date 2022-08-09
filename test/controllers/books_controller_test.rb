@@ -3,6 +3,7 @@ require "test_helper"
 class BooksControllerTest < ActionDispatch::IntegrationTest
   setup do
     @book = books(:the_colour_of_magic)
+    @loaned_book = books(:has_been_loaned)
 
     #TODO: should be extracted into helper
     post auth_login_path, {params: {username: 'ppetrovic', password: 'harD2gue55'}}
@@ -28,7 +29,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     assert_response :created
   end
 
-  test "create book with user with member role should get 403 forbiden" do
+  test "create book with user with member role should get 403 forbidden" do
     assert_no_changes("Book.count") do
       post books_url,
            headers:{authorization: @token_member},
@@ -84,6 +85,16 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :forbidden
+  end
+
+  test "destroy loaned book by librarian user should not succeed should get 409 Conflict" do
+    @book = books(:has_not_been_loaned)
+
+    assert_no_difference("Book.count", 'Book that has a loan record can\'t be deleted') do
+      delete book_url(@loaned_book), headers:{authorization: @token_librarian}, as: :json
+    end
+
+    assert_response :conflict
   end
 
   test "search for books with query that should return list of distinct books" do
