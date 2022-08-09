@@ -3,5 +3,8 @@
 terry_pratchett:
   name: Terry Pratchett
 
+author_with_no_books:
+  name: Giovanni Non Mi Scringo
+
 two:
   name: MyString
