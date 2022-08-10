@@ -46,25 +46,25 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update book by user with member role should get 403 forbidden" do
-    patch book_url(@book),
-          headers:{authorization: @token_member},
-          params: { book: {hard_copies_count: @book[:hard_copies_count] + 1} },
-          as: :json
-    assert_response :forbidden
-    old_value = @book[:hard_copies_count]
-    @book.reload
-    assert_equal old_value , @book[:hard_copies_count], 'hard_copies_count should be unchanged'
+    assert_no_changes'@book.hard_copies_count', 'hard_copies_count should be unchanged' do
+      patch book_url(@book),
+            headers:{authorization: @token_member},
+            params: { book: {hard_copies_count: @book[:hard_copies_count] + 1} },
+            as: :json
+      assert_response :forbidden
+      @book.reload
+    end
   end
 
   test "update book by user with librarian role should succeed" do
-    patch book_url(@book),
-          headers:{authorization: @token_librarian},
-          params: { book: {hard_copies_count: @book[:hard_copies_count] + 1} },
-          as: :json
-    assert_response :success
-    old_value = @book[:hard_copies_count]
-    @book.reload
-    assert_equal old_value + 1 , @book[:hard_copies_count], 'hard_copies_count should have increased by one'
+    assert_difference '@book.hard_copies_count',1, 'hard_copies_count should have increased by one'do
+      patch book_url(@book),
+            headers:{authorization: @token_librarian},
+            params: { book: {hard_copies_count: @book[:hard_copies_count] + 1} },
+            as: :json
+      assert_response :success
+      @book.reload
+    end
   end
 
   test "destroy book by librarian user should succeed" do
@@ -100,7 +100,9 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
   test "search for books with query that should return list of distinct books" do
     get search_books_path({q: 'Terry'}), headers:{authorization: @token_member}, as: :json
     json = JSON.parse(response.body)
-    assert_equal 3, json.size, 'Endpoint returned wrong number of books'
+    assert_equal 3, json.size, 'Endpoint returned unexpected number of books'
+
+    assert_response :success
   end
 
   test "search for books with query that should return empty list" do
@@ -109,4 +111,16 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     assert_equal 0, json.size, 'List of returned books should be empty'
   end
 
+  test "out of stock books should return 1 book" do
+    get  out_of_stock_books_path({date: '10/08/2022'}), as: :json
+    json = JSON.parse(response.body)
+    assert_equal 1, json.size, 'Endpoint returned unexpected number of books'
+    assert_equal 'The Colour of Magic', json[0]['title'] ,'Returned book title should be: The Colour of Magic'
+  end
+
+  test "out of stock books should return no books" do
+    get  out_of_stock_books_path({date: '10/09/2022'}), as: :json
+    json = JSON.parse(response.body)
+    assert_equal 0, json.size, 'Endpoint returned unexpected number of books'
+  end
 end

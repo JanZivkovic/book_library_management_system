@@ -1,5 +1,5 @@
 class BooksController < ApplicationController
-  before_action :authenticate_request, except: %i[ index show search]
+  before_action :authenticate_request, except: %i[ index show search out_of_stock]
   before_action :check_user_permissions, only: %i[ create update destroy ]
   before_action :set_book, only: %i[ show update destroy ]
 
@@ -53,6 +53,11 @@ class BooksController < ApplicationController
     render json: @books
   end
 
+  def out_of_stock
+    @books = Book.out_of_stock params[:date].to_time
+    render json: @books
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_book
@@ -62,6 +67,10 @@ class BooksController < ApplicationController
     # Only allow a list of trusted parameters through.
     def book_params
       params.require(:book).permit(:title, :hard_copies_count, :author_id)
+    end
+
+    def out_of_stock_params
+      params.require(:date)
     end
 
     def check_user_permissions
