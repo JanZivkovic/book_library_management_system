@@ -29,5 +29,9 @@ class Book < ApplicationRecord
         having
           count(book_loans.id) = books.hard_copies_count
       ', {date: date}]
-    end
+  end
+
+  def available_to_loan? date
+    self.book_loans.where("? between book_loans.start_date and book_loans.end_date", date).count < self.hard_copies_count
+  end
 end

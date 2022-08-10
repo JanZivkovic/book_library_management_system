@@ -54,7 +54,7 @@ class BooksController < ApplicationController
   end
 
   def out_of_stock
-    @books = Book.out_of_stock params[:date].to_time
+    @books = Book.out_of_stock params[:date].to_date
     render json: @books
   end
 

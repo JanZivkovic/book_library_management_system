@@ -13,8 +13,23 @@ class BookLoansControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index" do
-    get book_loans_url, as: :json
+    get book_loans_url,
+        headers:{ authorization: @token_librarian},
+        as: :json
     assert_response :success
+  end
+
+  test "should not get index should receive 403 - Forbidden" do
+    get book_loans_url,
+        headers:{ authorization: @token_member},
+        as: :json
+    assert_response :forbidden
+  end
+
+  test "should not get index should receive 401 - Not authorized" do
+    get book_loans_url,
+        as: :json
+    assert_response :not_authorized
   end
 
   test "should get loans for user" do
@@ -44,8 +59,8 @@ class BookLoansControllerTest < ActionDispatch::IntegrationTest
            params: {
              book_loan: { user_id: users(:one).id,
                           book_id: books(:the_colour_of_magic).id,
-                          start_date: Time.now,
-                          end_date: Time.now + 21.days}
+                          start_date: Date.today,
+                          end_date: Date.today + 21.days}
            },
            as: :json
     end

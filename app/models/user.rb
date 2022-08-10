@@ -9,4 +9,9 @@ class User < ApplicationRecord
   validates :email, presence: true
   validates :password, presence: true
   validates :username, presence:true, uniqueness: true
+
+
+  def can_make_a_loan? date
+    self.book_loans.where("? between book_loans.start_date and book_loans.end_date", date).count < 3
+  end
 end

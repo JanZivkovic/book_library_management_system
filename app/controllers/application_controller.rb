@@ -7,7 +7,7 @@ class ApplicationController < ActionController::API
     def authenticate_request
       header = request.headers["Authorization"]
       if header.nil?
-        render json: { error: 'unauthorized' }, status: :unauthorized
+        render json: { error: 'unauthorized' }, status: :unauthorized and return
       end
       #header = header.split(" ").last
       decoded = jwt_decode(header)

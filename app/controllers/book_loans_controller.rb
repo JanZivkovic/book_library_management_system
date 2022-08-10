@@ -1,5 +1,5 @@
 class BookLoansController < ApplicationController
-  before_action :authenticate_request, except: %i[ index show ]
+  before_action :authenticate_request
   before_action :check_user_permissions, only: %i[ create update destroy ]
   before_action :set_book_loan, only: %i[ show update destroy ]
 
@@ -26,7 +26,19 @@ class BookLoansController < ApplicationController
   def create
     @book_loan = BookLoan.new(book_loan_params)
 
-    if @book_loan.save!
+    if @book_loan.book
+      if !@book_loan.book.available_to_loan? Date.today
+        render json: {error: 'All hard copies of the book have been lent'}, status: :unprocessable_entity
+      end
+    end
+
+    if @book_loan.user
+      if !@book_loan.user.can_make_a_loan? Date.today
+        render json: {error: 'User has already lent 3 books'}, status: :unprocessable_entity
+      end
+    end
+
+    if @book_loan.save
       render json: @book_loan, status: :created, location: @book_loan
     else
       render json: @book_loan.errors, status: :unprocessable_entity
@@ -46,8 +58,6 @@ class BookLoansController < ApplicationController
   def destroy
     @book_loan.destroy
   end
-
-
 
   private
     # Use callbacks to share common setup or constraints between actions.
