@@ -41,9 +41,17 @@ class AuthorsController < ApplicationController
     begin
       @author.destroy
     rescue ActiveRecord::InvalidForeignKey => e
-      render json: { error: 'Foreign key constraint violated.' }, status: :conflict
+      render json: { error: e.message }, status: :conflict
     end
+  end
 
+  def search
+    @authors = Author.joins(:books).where(
+      'authors.name like ? or books.title like ?',
+      '%' + Author.sanitize_sql_like(params[:q]) + '%',
+      '%' + Author.sanitize_sql_like(params[:q]) + '%').distinct
+
+    render json: @authors
   end
 
   private
