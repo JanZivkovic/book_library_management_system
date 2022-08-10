@@ -103,7 +103,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     assert_equal 3, json.size, 'Endpoint returned wrong number of books'
   end
 
-  test "search for books with query that should return enpty list" do
+  test "search for books with query that should return empty list" do
     get search_books_path({q: 'TerryDeri'}), headers:{authorization: @token_member}, as: :json
     json = JSON.parse(response.body)
     assert_equal 0, json.size, 'List of returned books should be empty'

@@ -40,7 +40,7 @@ class BooksController < ApplicationController
     begin
       @book.destroy
     rescue ActiveRecord::InvalidForeignKey => e
-      render json: { error: e.full_message }, status: :conflict
+      render json: { error: e.message }, status: :conflict
     end
   end
 
