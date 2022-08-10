@@ -4,6 +4,7 @@ class User < ApplicationRecord
   has_secure_password
 
   belongs_to :role
+  has_many :book_loans
 
   validates :email, presence: true
   validates :password, presence: true
