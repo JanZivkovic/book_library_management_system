@@ -1,0 +1,68 @@
+class BookLoansController < ApplicationController
+  before_action :authenticate_request, except: %i[ index show ]
+  before_action :check_user_permissions, only: %i[ create update destroy ]
+  before_action :set_book_loan, only: %i[ show update destroy ]
+
+  # GET /book_loans
+  def index
+    @book_loans = BookLoan.all
+
+    render json: @book_loans
+  end
+
+  # GET /book_loans/
+  def user_book_loans
+    @book_loans = @current_user.book_loans.order('created_at asc')
+
+    render json: @book_loans
+  end
+
+  # GET /book_loans/1
+  def show
+    render json: @book_loan
+  end
+
+  # POST /book_loans
+  def create
+    @book_loan = BookLoan.new(book_loan_params)
+
+    if @book_loan.save!
+      render json: @book_loan, status: :created, location: @book_loan
+    else
+      render json: @book_loan.errors, status: :unprocessable_entity
+    end
+  end
+
+  # PATCH/PUT /book_loans/1
+  def update
+    if @book_loan.update(book_loan_params)
+      render json: @book_loan
+    else
+      render json: @book_loan.errors, status: :unprocessable_entity
+    end
+  end
+
+  # DELETE /book_loans/1
+  def destroy
+    @book_loan.destroy
+  end
+
+
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_book_loan
+      @book_loan = BookLoan.find(params[:id])
+    end
+
+    # Only allow a list of trusted parameters through.
+    def book_loan_params
+      params.require(:book_loan).permit(:user_id, :book_id, :start_date, :end_date)
+    end
+
+    def check_user_permissions
+      if @current_user.role.name != 'LIBRARIAN'
+        render json: { error: 'forbidden' }, status: :forbidden
+      end
+    end
+end
