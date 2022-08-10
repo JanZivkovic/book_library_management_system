@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     get 'search', to: 'books#search', on: :collection
     get 'out_of_stock', to:'books#out_of_stock', on: :collection
   end
+
   resources :authors do
     get 'search', to: 'authors#search', on: :collection
   end
