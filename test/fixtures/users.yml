@@ -20,3 +20,10 @@ three:
   email: p.petrovic2@gmail.com
   password_digest: $2a$12$s1tMHd7ST6HbXF3XpkQn6epmsi3ltmzyxpTdW2so96/KUqtPT2.Ki # password: harD2gue55
   role: member
+
+ray_charles:
+  name: Ray Charles
+  username: rayCC
+  email: ray@ray.com
+  password_digest: $2a$12$s1tMHd7ST6HbXF3XpkQn6epmsi3ltmzyxpTdW2so96/KUqtPT2.Ki # password: harD2gue55
+  role: member

@@ -14,7 +14,12 @@ class AuthorsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index" do
-    get authors_url, headers:{authorization: @token_member}, as: :json
+    get authors_url, headers:{authorization: @token_librarian}, as: :json
+    assert_response :success
+  end
+
+  test "should get index unauthorized" do
+    get authors_url, as: :json
     assert_response :success
   end
 
@@ -41,7 +46,7 @@ class AuthorsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show author" do
-    get author_url(@author), headers:{authorization: @token_member},as: :json
+    get author_url(@author),as: :json
 
     assert_response :success
   end
@@ -103,6 +108,8 @@ class AuthorsControllerTest < ActionDispatch::IntegrationTest
 
   test "should find one author by search" do
     get search_authors_path({q: 'Colour'}), as: :json
+
+    assert_response :success
     json = JSON.parse(response.body)
     assert_equal 1, json.size, 'List of returned books should contain one book'
     assert_equal 'Terry Pratchett', json[0]['name'], 'Wrong author returned'
@@ -110,6 +117,8 @@ class AuthorsControllerTest < ActionDispatch::IntegrationTest
 
   test "should find zero authors by search" do
     get search_authors_path({q: 'ColourDolor'}), as: :json
+
+    assert_response :success
     json = JSON.parse(response.body)
     assert_equal 0, json.size, 'List of returned books should be empty'
   end

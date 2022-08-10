@@ -8,6 +8,9 @@ class BookLoansControllerTest < ActionDispatch::IntegrationTest
     post auth_login_path, {params: {username: 'ppetrovic', password: 'harD2gue55'}}
     @token_member = JSON.parse(response.body)['token']
 
+    post auth_login_path, {params: {username: 'rayCC', password: 'harD2gue55'}}
+    @token_member_without_loans = JSON.parse(response.body)['token']
+
     post auth_login_path, {params: {username: 'pstijena', password: 'riirgjt45893'}}
     @token_librarian = JSON.parse(response.body)['token']
   end
@@ -36,18 +39,18 @@ class BookLoansControllerTest < ActionDispatch::IntegrationTest
     get user_book_loans_url(users(:one)),
         headers:{ authorization: @token_member},
         as: :json
-    assert_response :success
 
+    assert_response :success
     json = JSON.parse(response.body)
     assert_equal 3, json.size, 'Endpoint returned unexpected number of loans'
   end
 
   test "should get empty loan list" do
     get user_book_loans_url(users(:one)),
-        headers:{ authorization: @token_librarian},
+        headers:{ authorization: @token_member_without_loans},
         as: :json
-    assert_response :success
 
+    assert_response :success
     json = JSON.parse(response.body)
     assert_equal 0, json.size, 'Loan list should be empty'
   end

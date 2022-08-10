@@ -1,6 +1,7 @@
 class BookLoansController < ApplicationController
   before_action :authenticate_request
-  before_action :check_user_permissions, except: %i[ user_book_loans ]
+  before_action :check_user_role_librarian, except: %i[ user_book_loans ]
+  before_action :check_user_role_member, only: %i[ user_book_loans ]
   before_action :set_book_loan, only: %i[ show update destroy ]
 
   # GET /book_loans
@@ -70,8 +71,14 @@ class BookLoansController < ApplicationController
       params.require(:book_loan).permit(:user_id, :book_id, :start_date, :end_date)
     end
 
-    def check_user_permissions
+    def check_user_role_librarian
       if @current_user.role.name != 'LIBRARIAN'
+        render json: { error: 'forbidden' }, status: :forbidden
+      end
+    end
+
+    def check_user_role_member
+      if @current_user.role.name != 'MEMBER'
         render json: { error: 'forbidden' }, status: :forbidden
       end
     end

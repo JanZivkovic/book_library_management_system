@@ -14,7 +14,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index" do
-    get books_url, headers:{authorization: @token_member}, as: :json
+    get books_url, as: :json
     assert_response :success
   end
 
@@ -40,8 +40,8 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
   end
 
-  test "show book to user with member role should succeed" do
-    get book_url(@book), headers:{authorization: @token_member}, as: :json
+  test "should show book" do
+    get book_url(@book), as: :json
     assert_response :success
   end
 
@@ -71,17 +71,21 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     @book = books(:has_not_been_loaned)
 
     assert_difference("Book.count", -1) do
-      delete book_url(@book), headers:{authorization: @token_librarian}, as: :json
+      delete book_url(@book),
+             headers:{authorization: @token_librarian},
+             as: :json
     end
 
     assert_response :no_content
   end
 
-  test "destroy book by member user should succeed" do
+  test "destroy book by member user should get 403 - Forbidden" do
     @book = books(:has_not_been_loaned)
 
     assert_no_changes("Book.count") do
-      delete book_url(@book), headers:{authorization: @token_member}, as: :json
+      delete book_url(@book),
+             headers:{authorization: @token_member},
+             as: :json
     end
 
     assert_response :forbidden
@@ -91,14 +95,17 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     @book = books(:has_not_been_loaned)
 
     assert_no_difference("Book.count", 'Book that has a loan record can\'t be deleted') do
-      delete book_url(@loaned_book), headers:{authorization: @token_librarian}, as: :json
+      delete book_url(@loaned_book),
+             headers:{authorization: @token_librarian},
+             as: :json
     end
 
     assert_response :conflict
   end
 
   test "search for books with query that should return list of distinct books" do
-    get search_books_path({q: 'Terry'}), headers:{authorization: @token_member}, as: :json
+    get search_books_path({q: 'Terry'}),
+        as: :json
     json = JSON.parse(response.body)
     assert_equal 3, json.size, 'Endpoint returned unexpected number of books'
 
@@ -106,21 +113,32 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "search for books with query that should return empty list" do
-    get search_books_path({q: 'TerryDeri'}), headers:{authorization: @token_member}, as: :json
+    get search_books_path({q: 'TerryDeri'}),
+        as: :json
     json = JSON.parse(response.body)
+
+    assert_response :success
     assert_equal 0, json.size, 'List of returned books should be empty'
   end
 
   test "out of stock books should return 1 book" do
-    get  out_of_stock_books_path({date: '10/08/2022'}), as: :json
+    get  out_of_stock_books_path({date: '10/08/2022'}),
+         headers:{authorization: @token_librarian},
+         as: :json
     json = JSON.parse(response.body)
+
+    assert_response :success
     assert_equal 1, json.size, 'Endpoint returned unexpected number of books'
     assert_equal 'The Colour of Magic', json[0]['title'] ,'Returned book title should be: The Colour of Magic'
   end
 
   test "out of stock books should return no books" do
-    get  out_of_stock_books_path({date: '10/09/2022'}), as: :json
+    get  out_of_stock_books_path({date: '10/09/2022'}),
+         headers:{authorization: @token_librarian},
+         as: :json
     json = JSON.parse(response.body)
+
+    assert_response :success
     assert_equal 0, json.size, 'Endpoint returned unexpected number of books'
   end
 end

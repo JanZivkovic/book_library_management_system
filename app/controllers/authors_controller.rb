@@ -1,7 +1,7 @@
 class AuthorsController < ApplicationController
 
-  before_action :authenticate_request, except: %i[ index show search]
-  before_action :check_user_permissions, only: %i[ create update destroy ]
+  before_action :authenticate_request, except: %i[ search index show ]
+  before_action :check_user_role_librarian, except: %i[ search index show ]
   before_action :set_author, only: %i[ show update destroy ]
 
   # GET /authors
@@ -47,9 +47,9 @@ class AuthorsController < ApplicationController
 
   def search
     @authors = Author.joins(:books).where(
-      'authors.name like ? or books.title like ?',
-      '%' + Author.sanitize_sql_like(params[:q]) + '%',
-      '%' + Author.sanitize_sql_like(params[:q]) + '%').distinct
+      'lower(authors.name) like ? or lower(books.title) like ?',
+      '%' + Author.sanitize_sql_like(params[:q].downcase) + '%',
+      '%' + Author.sanitize_sql_like(params[:q].downcase) + '%').distinct
 
     render json: @authors
   end
@@ -65,7 +65,7 @@ class AuthorsController < ApplicationController
       params.require(:author).permit(:name)
     end
 
-    def check_user_permissions
+    def check_user_role_librarian
       if @current_user.role.name != 'LIBRARIAN'
         render json: { error: 'forbidden' }, status: :forbidden
       end
