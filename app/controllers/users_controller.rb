@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  skip_before_action :authenticate_request, only: [:create]
+  before_action :authenticate_request
+  before_action :check_user_role_librarian
   before_action :set_user, only: [:show, :destroy]
 
   # GET /users
@@ -19,7 +20,7 @@ class UsersController < ApplicationController
     if @user.save
       render json: @user, status: :created
     else
-      render json: { errors: @user.errors.full_messages },
+      render json: { errors: @user.errors },
              status: :unprocessable_entity
     end
   end
@@ -27,7 +28,7 @@ class UsersController < ApplicationController
   # PUT /users/{username}
   def update
     unless @user.update(user_params)
-      render json: { errors: @user.errors.full_messages },
+      render json: { errors: @user.errors },
              status: :unprocessable_entity
     end
   end
@@ -40,10 +41,16 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.permit(:username, :email, :password, :role_id)
+    params.require(:user).permit(:username, :email, :password, :role_id)
   end
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  def check_user_role_librarian
+    if @current_user.role.name != 'LIBRARIAN'
+      render json: { error: 'forbidden' }, status: :forbidden
+    end
   end
 end
