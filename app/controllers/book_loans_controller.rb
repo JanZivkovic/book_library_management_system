@@ -1,6 +1,6 @@
 class BookLoansController < ApplicationController
   before_action :authenticate_request
-  before_action :check_user_permissions, only: %i[ create update destroy ]
+  before_action :check_user_permissions, except: %i[ user_book_loans ]
   before_action :set_book_loan, only: %i[ show update destroy ]
 
   # GET /book_loans
@@ -28,13 +28,13 @@ class BookLoansController < ApplicationController
 
     if @book_loan.book
       if !@book_loan.book.available_to_loan? Date.today
-        render json: {error: 'All hard copies of the book have been lent'}, status: :unprocessable_entity
+        render json: {error: 'All hard copies of the book have been lent'}, status: :unprocessable_entity and return
       end
     end
 
     if @book_loan.user
       if !@book_loan.user.can_make_a_loan? Date.today
-        render json: {error: 'User has already lent 3 books'}, status: :unprocessable_entity
+        render json: {error: 'User has already lent 3 books'}, status: :unprocessable_entity and return
       end
     end
 
