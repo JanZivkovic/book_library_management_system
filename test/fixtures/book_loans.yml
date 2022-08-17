@@ -2,7 +2,7 @@
 
 one:
   start_date: 2022-08-01
-  end_date: 2022-08-21
+  end_date: nil
   book: the_colour_of_magic
   user: one
 
@@ -14,12 +14,12 @@ two:
 
 three:
   start_date: 2022-08-01
-  end_date: 2022-08-21
+  end_date: nil
   book: the_colour_of_magic
   user: one
 
 four:
   start_date: 2022-08-01
-  end_date: 2022-08-21
+  end_date: nil
   book: the_colour_of_magic
   user: one

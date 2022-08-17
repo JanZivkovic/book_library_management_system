@@ -20,7 +20,9 @@ class Book < ApplicationRecord
           book_loans on
             book_loans.book_id = books.id
         where
-          date(:date) between book_loans.start_date and book_loans.end_date
+          date(:date) >= book_loans.start_date
+          and
+          (book_loans.end_date is null or date(:date) <= book_loans.end_date)
         group by
           books.id,
           books.title,

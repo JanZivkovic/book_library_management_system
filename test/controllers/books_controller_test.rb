@@ -133,7 +133,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "out of stock books should return no books" do
-    get  out_of_stock_books_path({date: '10/09/2022'}),
+    get  out_of_stock_books_path({date: '01/07/2022'}),
          headers:{authorization: @token_librarian},
          as: :json
     json = JSON.parse(response.body)
