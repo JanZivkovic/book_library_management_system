@@ -48,6 +48,11 @@ class BookLoansController < ApplicationController
 
   # PATCH/PUT /book_loans/1
   def update
+
+    if book_loan_params['end_date'] && book_loan_params['end_date'].to_date > today
+      render json: { error: 'end_date can not be greater then today.' }, status: :unprocessable_entity and return
+    end
+
     if @book_loan.update(book_loan_params)
       render json: @book_loan
     else

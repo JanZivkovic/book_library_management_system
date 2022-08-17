@@ -113,7 +113,7 @@ class BookLoansControllerTest < ActionDispatch::IntegrationTest
   test "should update book_loan" do
     patch book_loan_url(@book_loan),
           headers:{ authorization: @token_librarian},
-          params: { book_loan: { end_date: @book_loan.end_date + 21.days  } },
+          params: { book_loan: { start_date: @book_loan.start_date + 21.days  } },
           as: :json
     assert_response :success
   end

@@ -4,7 +4,6 @@ class BookLoan < ApplicationRecord
 
 
   validates :start_date, presence: true
-  validates :end_date, presence: true
   validates :book, presence: true
   validates :user, presence: true
 
@@ -29,8 +28,14 @@ class BookLoan < ApplicationRecord
     end
 
     def start_date_gr_than_or_eq_to_end_date?
-      if !(end_date.after? start_date  || start_date == end_date)
+      unless !end_date || end_date.after?(start_date) || start_date == end_date
         errors.add(:end_date, "must be greater or equal to start date.")
       end
     end
+
+  def end_date_gr_than_today?
+    if end_date&.after? Date.today
+      errors.add(:end_date, "must be greater or equal to start date.")
+    end
+  end
 end

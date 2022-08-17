@@ -22,7 +22,7 @@ class Book < ApplicationRecord
         where
           date(:date) >= book_loans.start_date
           and
-          (book_loans.end_date is null or date(:date) <= book_loans.end_date)
+          book_loans.end_date is null
         group by
           books.id,
           books.title,
@@ -34,6 +34,6 @@ class Book < ApplicationRecord
   end
 
   def available_to_loan? date
-    self.book_loans.where("date(:date) >= book_loans.start_date and (book_loans.end_date is null or book_loans.end_date >= date(:date)) ", {date: date}).count < self.hard_copies_count
+    self.book_loans.where("date(:date) >= book_loans.start_date and book_loans.end_date is null ", {date: date}).count < self.hard_copies_count
   end
 end
