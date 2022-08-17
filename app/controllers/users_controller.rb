@@ -9,7 +9,7 @@ class UsersController < ApplicationController
     render json: @users, status: :ok
   end
 
-  # GET /users/{username}
+  # GET /users/{id}
   def show
     render json: @user, status: :ok
   end
@@ -25,7 +25,7 @@ class UsersController < ApplicationController
     end
   end
 
-  # PUT /users/{username}
+  # PUT /users/{id}
   def update
     unless @user.update(user_params)
       render json: { errors: @user.errors },
@@ -33,9 +33,13 @@ class UsersController < ApplicationController
     end
   end
 
-  # DELETE /users/{username}
+  # DELETE /users/{id}
   def destroy
-    @user.destroy
+    begin
+      @user.destroy
+    rescue ActiveRecord::InvalidForeignKey => e
+      render json: { error: e.message }, status: :conflict
+    end
   end
 
   private
