@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   post 'auth/login', to: 'authentication#login'
 
-  resources :users , only: [:create] do
+  resources :users , only: [:create, :destroy] do
     get 'book_loans', to:'book_loans#user_book_loans'
   end
 

@@ -27,3 +27,10 @@ ray_charles:
   email: ray@ray.com
   password_digest: $2a$12$s1tMHd7ST6HbXF3XpkQn6epmsi3ltmzyxpTdW2so96/KUqtPT2.Ki # password: harD2gue55
   role: member
+
+delete_me:
+  name: User to be Deleted
+  username: delME
+  email: del@me.com
+  password_digest: $2a$12$s1tMHd7ST6HbXF3XpkQn6epmsi3ltmzyxpTdW2so96/KUqtPT2.Ki # password: harD2gue55
+  role: member

@@ -32,4 +32,18 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "delete user succeeds" do
+    delete user_url(users(:delete_me)),
+         headers:{authorization: @token_librarian}
+    assert_response :success
+  end
+
+  test "delete user fails due to constraint violation" do
+
+    delete user_url(users(:one)),
+         headers:{authorization: @token_librarian}
+
+    assert_equal "SQLite3::ConstraintException: FOREIGN KEY constraint failed", JSON.parse(response.body)['error']
+    assert_response :conflict
+  end
 end
