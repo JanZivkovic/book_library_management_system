@@ -7,12 +7,12 @@ class BooksController < ApplicationController
   def index
     @books = Book.all
 
-    render json: @books
+    render json: BookSerializer.new(@books).serializable_hash
   end
 
   # GET /books/1
   def show
-    render json: @book
+    render json: BookSerializer.new(@book).serializable_hash
   end
 
   # POST /books
@@ -20,7 +20,7 @@ class BooksController < ApplicationController
     @book = Book.new(book_params)
 
     if @book.save
-      render json: @book, status: :created, location: @book
+      render json: BookSerializer.new(@book).serializable_hash, status: :created, location: @book
     else
       render json: @book.errors, status: :unprocessable_entity
     end
@@ -29,7 +29,7 @@ class BooksController < ApplicationController
   # PATCH/PUT /books/1
   def update
     if @book.update(book_params)
-      render json: @book
+      render json: BookSerializer.new(@book).serializable_hash
     else
       render json: @book.errors, status: :unprocessable_entity
     end
@@ -50,12 +50,12 @@ class BooksController < ApplicationController
       '%' + Book.sanitize_sql_like(params[:q].downcase) + '%',
       '%' + Book.sanitize_sql_like(params[:q].downcase) + '%').distinct
 
-    render json: @books
+    render json: BookSerializer.new(@books).serializable_hash
   end
 
   def out_of_stock
     @books = Book.out_of_stock params[:date].to_date
-    render json: @books
+    render json: BookSerializer.new(@books).serializable_hash
   end
 
   private

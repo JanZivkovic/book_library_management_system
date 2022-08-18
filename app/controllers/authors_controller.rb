@@ -8,12 +8,12 @@ class AuthorsController < ApplicationController
   def index
     @authors = Author.all
 
-    render json: @authors
+    render json: AuthorSerializer.new(@authos).serializable_hash
   end
 
   # GET /authors/1
   def show
-    render json: @author
+    render json: AuthorSerializer.new(@author).serializable_hash
   end
 
   # POST /authors
@@ -21,7 +21,7 @@ class AuthorsController < ApplicationController
     @author = Author.new(author_params)
 
     if @author.save
-      render json: @author, status: :created, location: @author
+      render json: AuthorSerializer.new(@author).serializable_hash, status: :created, location: @author
     else
       render json: @author.errors, status: :unprocessable_entity
     end
@@ -30,7 +30,7 @@ class AuthorsController < ApplicationController
   # PATCH/PUT /authors/1
   def update
     if @author.update(author_params)
-      render json: @author
+      render json: AuthorSerializer.new(@author).serializable_hash
     else
       render json: @author.errors, status: :unprocessable_entity
     end
@@ -51,7 +51,7 @@ class AuthorsController < ApplicationController
       '%' + Author.sanitize_sql_like(params[:q].downcase) + '%',
       '%' + Author.sanitize_sql_like(params[:q].downcase) + '%').distinct
 
-    render json: @authors
+    render json: AuthorSerializer.new(@authos).serializable_hash
   end
 
   private

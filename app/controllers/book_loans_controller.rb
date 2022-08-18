@@ -8,19 +8,19 @@ class BookLoansController < ApplicationController
   def index
     @book_loans = BookLoan.all
 
-    render json: @book_loans
+    render json: BookLoanSerializer.new(@book_loans).serializable_hash
   end
 
   # GET /book_loans/
   def user_book_loans
     @book_loans = @current_user.book_loans.order('created_at asc')
 
-    render json: @book_loans
+    render json: BookLoanSerializer.new(@book_loans).serializable_hash
   end
 
   # GET /book_loans/1
   def show
-    render json: @book_loan
+    render json: BookLoanSerializer.new(@book_loan).serializable_hash
   end
 
   # POST /book_loans
@@ -40,7 +40,7 @@ class BookLoansController < ApplicationController
     end
 
     if @book_loan.save
-      render json: @book_loan, status: :created, location: @book_loan
+      render json: BookLoanSerializer.new(@book_loan).serializable_hash, status: :created, location: @book_loan
     else
       render json: @book_loan.errors, status: :unprocessable_entity
     end
@@ -54,7 +54,7 @@ class BookLoansController < ApplicationController
     end
 
     if @book_loan.update(book_loan_params)
-      render json: @book_loan
+      render json: BookLoanSerializer.new(@book_loan).serializable_hash
     else
       render json: @book_loan.errors, status: :unprocessable_entity
     end
