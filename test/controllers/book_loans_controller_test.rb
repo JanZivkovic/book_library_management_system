@@ -42,7 +42,7 @@ class BookLoansControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     json = JSON.parse(response.body)
-    assert_equal 3, json.size, 'Endpoint returned unexpected number of loans'
+    assert_equal 3, json['data'].size, 'Endpoint returned unexpected number of loans'
   end
 
   test "should get empty loan list" do
@@ -52,7 +52,7 @@ class BookLoansControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     json = JSON.parse(response.body)
-    assert_equal 0, json.size, 'Loan list should be empty'
+    assert_equal 0, json['data'].size, 'Loan list should be empty'
   end
 
   test "should not create book_loan because user has already loaned 3 books" do

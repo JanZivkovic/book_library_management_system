@@ -8,7 +8,7 @@ class AuthorsController < ApplicationController
   def index
     @authors = Author.all
 
-    render json: AuthorSerializer.new(@authos).serializable_hash
+    render json: AuthorSerializer.new(@authors).serializable_hash
   end
 
   # GET /authors/1
@@ -47,11 +47,10 @@ class AuthorsController < ApplicationController
 
   def search
     @authors = Author.joins(:books).where(
-      'lower(authors.name) like ? or lower(books.title) like ?',
-      '%' + Author.sanitize_sql_like(params[:q].downcase) + '%',
-      '%' + Author.sanitize_sql_like(params[:q].downcase) + '%').distinct
+      'lower(authors.name) like :search_text or lower(books.title) like :search_text',
+      {search_text: '%' + Author.sanitize_sql_like(params[:q].downcase) + '%'}) .distinct
 
-    render json: AuthorSerializer.new(@authos).serializable_hash
+    render json: AuthorSerializer.new(@authors).serializable_hash
   end
 
   private

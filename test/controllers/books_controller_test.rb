@@ -107,7 +107,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     get search_books_path({q: 'Terry'}),
         as: :json
     json = JSON.parse(response.body)
-    assert_equal 3, json.size, 'Endpoint returned unexpected number of books'
+    assert_equal 3, json['data'].size, 'Endpoint returned unexpected number of books'
 
     assert_response :success
   end
@@ -118,7 +118,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     json = JSON.parse(response.body)
 
     assert_response :success
-    assert_equal 0, json.size, 'List of returned books should be empty'
+    assert_equal 0, json['data'].size, 'List of returned books should be empty'
   end
 
   test "out of stock books should return 1 book" do
@@ -128,8 +128,8 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     json = JSON.parse(response.body)
 
     assert_response :success
-    assert_equal 1, json.size, 'Endpoint returned unexpected number of books'
-    assert_equal 'The Colour of Magic', json[0]['title'] ,'Returned book title should be: The Colour of Magic'
+    assert_equal 1, json['data'].size, 'Endpoint returned unexpected number of books'
+    assert_equal 'The Colour of Magic', json['data'][0]['attributes']['title'] ,'Returned book title should be: The Colour of Magic'
   end
 
   test "out of stock books should return no books" do
@@ -139,6 +139,6 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     json = JSON.parse(response.body)
 
     assert_response :success
-    assert_equal 0, json.size, 'Endpoint returned unexpected number of books'
+    assert_equal 0, json['data'].size, 'Endpoint returned unexpected number of books'
   end
 end

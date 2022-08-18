@@ -111,8 +111,8 @@ class AuthorsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     json = JSON.parse(response.body)
-    assert_equal 1, json.size, 'List of returned books should contain one book'
-    assert_equal 'Terry Pratchett', json[0]['name'], 'Wrong author returned'
+    assert_equal 1, json['data'].size, 'List of returned books should contain one book'
+    assert_equal 'Terry Pratchett', json['data'][0]['attributes']['name'], 'Wrong author returned'
   end
 
   test "should find zero authors by search" do
@@ -120,6 +120,6 @@ class AuthorsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     json = JSON.parse(response.body)
-    assert_equal 0, json.size, 'List of returned books should be empty'
+    assert_equal 0, json['data'].size, 'List of returned books should be empty'
   end
 end
